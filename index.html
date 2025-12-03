@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>個人簡歷 | Cyberpunk Profile</title>
+    <!-- 引入 FontAwesome 圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入 Google Fonts (Fira Code 為程式碼風格字體) -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;600&family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CSS 變數定義 (配色方案) --- */
+        :root {
+            --bg-color: #050505;
+            --bg-grid: #0a0a0a;
+            --primary-color: #00f3ff; /* 霓虹青 */
+            --secondary-color: #ff00ff; /* 霓虹粉 */
+            --text-color: #e0e0e0;
+            --card-bg: rgba(20, 20, 20, 0.8);
+            --timeline-line: #333;
+        }
+
+        /* --- 全局設定 --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth; /* 平滑捲動 */
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            line-height: 1.6;
+            /* 背景網格線效果 */
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* 程式碼字體用於標題和強調文字 */
+        h1, h2, h3, .mono-font {
+            font-family: 'Fira Code', monospace;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* --- 導覽列 (Navigation) --- */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(5, 5, 5, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--primary-color);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-shadow: 0 0 5px var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--secondary-color);
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* 手機版漢堡選單 */
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+
+        /* --- 區塊通用設定 --- */
+        section {
+            padding: 80px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 100vh; /* 每個區塊至少佔滿一頁 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        /* 避免導覽列遮擋錨點 */
+        section[id] {
+            scroll-margin-top: 70px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .section-title::before {
+            content: '< ';
+            color: var(--secondary-color);
+        }
+        .section-title::after {
+            content: ' />';
+            color: var(--secondary-color);
+        }
+
+        /* --- 個人資訊區塊 (Hero Section) --- */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 120px;
+        }
+
+        .hero-content {
+            flex: 1;
+        }
+
+        .glitch-text {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: white;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .typing-effect {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            border-right: 2px solid var(--primary-color);
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0;
+            animation: typing 3s steps(30, end) forwards, blink 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; max-width: 500px; } /* 限制最大寬度避免手機版跑版 */
+        }
+
+        @keyframes blink {
+            from, to { border-color: transparent; }
+            50% { border-color: var(--primary-color); }
+        }
+
+        .contact-info {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            padding: 10px 20px;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .social-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-color);
+            transition: 0.3s;
+            z-index: -1;
+        }
+
+        .social-btn:hover {
+            color: black;
+            box-shadow: 0 0 15px var(--primary-color);
+        }
+
+        .social-btn:hover::before {
+            left: 0;
+        }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* 頭像框樣式 */
+        .avatar-container {
+            width: 300px;
+            height: 300px;
+            position: relative;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid var(--secondary-color);
+            box-shadow: 0 0 20px var(--secondary-color);
+            filter: grayscale(30%);
+            transition: 0.5s;
+        }
+
+        .avatar:hover {
+            filter: grayscale(0%);
+            transform: scale(1.05);
+        }
+
+        /* --- 技能展示區 (Skills) --- */
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-item {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-left: 3px solid var(--primary-color);
+            position: relative;
+        }
+
+        .skill-name {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 10px;
+            background: #333;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            width: 0; /* JS 控制寬度 */
+            transition: width 1.5s ease-out;
+            box-shadow: 0 0 10px var(--primary-color);
+        }
+
+        /* 標籤雲樣式 */
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .tag {
+            background: rgba(0, 243, 255, 0.1);
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .tag:hover {
+            background: var(--primary-color);
+            color: black;
+            cursor: default;
+        }
+
+        /* --- 經歷時間軸 (Timeline) --- */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* 中間的線 */
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            background-color: var(--primary-color);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -1px;
+            box-shadow: 0 0 10px var(--primary-color);
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+            opacity: 0; /* 初始隱藏，用於動畫 */
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .timeline-item.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .left {
+            left: 0;
+        }
+
+        .right {
+            left: 50%;
+        }
+
+        /* 時間軸上的點 */
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -10px;
+            background-color: var(--bg-color);
+            border: 3px solid var(--secondary-color);
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+            box-shadow: 0 0 10px var(--secondary-color);
+        }
+
+        .right::after {
+            left: -10px;
+        }
+
+        .content {
+            padding: 20px 30px;
+            background-color: var(--card-bg);
+            position: relative;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .content:hover {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.2);
+        }
+
+        .date {
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        /* --- 專案作品集 (Projects) --- */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .project-img-container {
+            width: 100%;
+            height: 200px;
+            background-color: #222;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .project-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .project-card:hover .project-img {
+            transform: scale(1.1);
+        }
+
+        .project-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-title {
+            font-size: 1.4rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-role {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-bottom: 1rem;
+            font-style: italic;
+            border-bottom: 1px solid #444;
+            padding-bottom: 0.5rem;
+        }
+
+        .project-desc {
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .project-link {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .project-link:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: #000;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid #333;
+        }
+
+        .footer-text {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* --- 響應式設計 (Media Queries) --- */
+        @media screen and (max-width: 768px) {
+            .hero {
+                flex-direction: column-reverse;
+                text-align: center;
+                padding-top: 100px;
+            }
+
+            .hero-content {
+                width: 100%;
+            }
+            
+            .contact-info {
+                justify-content: center;
+            }
+
+            .typing-effect {
+                margin: 0 auto 2rem auto; /* 置中打字動畫 */
+                white-space: normal; /* 手機版允許換行 */
+                animation: none; /* 手機版移除打字動畫以免排版混亂 */
+                border: none;
+                width: 100%;
+            }
+
+            .avatar-container {
+                width: 200px;
+                height: 200px;
+                margin-bottom: 2rem;
+            }
+
+            /* 手機版時間軸調整 */
+            .timeline::after {
+                left: 31px;
+            }
+
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+
+            .timeline-item::after {
+                left: 21px;
+            }
+
+            .left::after, .right::after {
+                left: 21px;
+            }
+
+            .right {
+                left: 0%;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            .nav-links {
+                display: none; /* 隱藏桌面選單 */
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background: rgba(5, 5, 5, 0.95);
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                border-bottom: 1px solid var(--primary-color);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block; /* 顯示漢堡選單按鈕 */
+            }
+
+            .glitch-text {
+                font-size: 2.5rem;
+            }
+            
+            section {
+                padding: 60px 5%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 導覽列 -->
+    <header>
+        <nav>
+            <div class="logo">&lt;DEV_NAME /&gt;</div>
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">HOME</a></li>
+                <li><a href="#about">ABOUT</a></li>
+                <li><a href="#skills">SKILLS</a></li>
+                <li><a href="#experience">EXPERIENCE</a></li>
+                <li><a href="#projects">PROJECTS</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 個人資訊區塊 (Home/About) -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="glitch-text">巫奕嶔</h1>
+            <div class="typing-effect">前端工程師 | UI/UX 設計師 | 科技愛好者</div>
+            <p style="color: #bbb; margin-bottom: 1.5rem; max-width: 600px;">
+                熱愛將創意轉化為程式碼的開發者。專注於打造使用者體驗流暢、視覺效果酷炫的網頁應用程式。隨時準備好迎接下一個挑戰。
+            </p>
+            
+            <div class="contact-info">
+                <!-- Email 必填 -->
+                <a href="mailto:woowujasonwu@gmail.com" class="social-btn">
+                    <i class="fas fa-envelope"></i> Email Me
+                </a>
+                <!-- 其他社交連結 -->
+                <a href="https://github.com/JasonWu55/" class="social-btn">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+                <a href="#" class="social-btn">
+                    <i class="fab fa-instagram"></i> Instagram
+                </a>
+                <a href="#" class="social-btn">
+                    <i class="fab fa-threads"></i> Threads
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-image">
+            <div class="avatar-container">
+                <!-- 使用假圖示意，你可以替換成自己的照片 URL -->
+                <img src="assets/avatar.png" alt="Profile Photo" class="avatar">
+            </div>
+        </div>
+    </section>
+
+    <!-- 技能展示區 (Skills) -->
+    <section id="skills">
+        <h2 class="section-title">Technical Skills</h2>
+        
+        <div class="skills-container">
+            <!-- 進度條技能 -->
+            <div>
+                <h3 class="mono-font" style="margin-bottom: 1.5rem; color: var(--secondary-color);">// 主要能力</h3>
+                
+                <div class="skill-item" style="margin-bottom: 1rem;">
+                    <div class="skill-name">
+                        <span>HTML/CSS/JS</span>
+                        <span>90%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" data-width="90%"></div>
+                    </div>
+                </div>
+
+                <div class="skill-item" style="margin-bottom: 1rem;">
+                    <div class="skill-name">
+                        <span>Python / Data Analysis</span>
+                        <span>75%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" data-width="75%"></div>
+                    </div>
+                </div>
+
+                <div class="skill-item" style="margin-bottom: 1rem;">
+                    <div class="skill-name">
+                        <span>UI/UX Design (Figma)</span>
+                        <span>85%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" data-width="85%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 標籤雲技能 -->
+            <div>
+                <h3 class="mono-font" style="margin-bottom: 1.5rem; color: var(--secondary-color);">// 其他工具與軟技能</h3>
+                <div class="tag-cloud">
+                    <span class="tag">Git & GitHub</span>
+                    <span class="tag">React.js</span>
+                    <span class="tag">Node.js</span>
+                    <span class="tag">Photoshop</span>
+                    <span class="tag">Illustrator</span>
+                    <span class="tag">團隊溝通</span>
+                    <span class="tag">專案管理</span>
+                    <span class="tag">英語能力 (TOEIC 850)</span>
+                    <span class="tag">敏捷開發</span>
+                    <span class="tag">Docker</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 工作／經歷時間軸 (Experience) -->
+    <section id="experience">
+        <h2 class="section-title">My Journey</h2>
+        
+        <div class="timeline">
+            <!-- 國中時期 -->
+            <div class="timeline-item left">
+                <div class="content">
+                    <span class="date">2018 - 2021</span>
+                    <h3 class="mono-font">國中機器人社團 | 社長</h3>
+                    <p>帶領社員參加全國機器人競賽，獲得佳作。負責程式邏輯撰寫與硬體組裝教學，培養了解決問題的基礎能力。</p>
+                </div>
+            </div>
+
+            <!-- 高中時期 -->
+            <div class="timeline-item right">
+                <div class="content">
+                    <span class="date">2021 - 2024</span>
+                    <h3 class="mono-font">高中資訊研習社 | 教學長</h3>
+                    <p>主講 Python 入門課程，設計 10 堂社課教材。期間亦參與黑客松比賽 (Hackathon)，開發校園午餐訂購系統雛形。</p>
+                </div>
+            </div>
+
+            <!-- 大一時期 -->
+            <div class="timeline-item left">
+                <div class="content">
+                    <span class="date">2024 - Present</span>
+                    <h3 class="mono-font">資訊工程系 | 大一新生</h3>
+                    <p>加入系學會資訊部，負責維護系上網站。開始深入研究前端框架與後端 API 串接，並接手第一個校外 Freelance 案件。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 專案作品集展示 (Projects) -->
+    <section id="projects">
+        <h2 class="section-title">Projects</h2>
+        
+        <div class="projects-grid">
+            <!-- 作品 1 -->
+            <div class="project-card">
+                <div class="project-img-container">
+                    <img src="https://placehold.co/600x400/222/00f3ff?text=School+Project" alt="專案縮圖" class="project-img">
+                </div>
+                <div class="project-info">
+                    <h3 class="project-title">校園活動報名系統</h3>
+                    <div class="project-role">角色：全端開發 (PHP + MySQL)</div>
+                    <p class="project-desc">高中時期的專題作品。解決紙本報名統計困難的問題，包含後台管理與 QR Code 簽到功能。</p>
+                    <div class="project-links">
+                        <a href="#" class="project-link"><i class="fas fa-link"></i> Live Demo</a>
+                        <a href="#" class="project-link"><i class="fab fa-github"></i> Code</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 作品 2 -->
+            <div class="project-card">
+                <div class="project-img-container">
+                    <img src="https://placehold.co/600x400/222/ff00ff?text=Side+Project" alt="專案縮圖" class="project-img">
+                </div>
+                <div class="project-info">
+                    <h3 class="project-title">天氣資訊 Dashboard</h3>
+                    <div class="project-role">角色：前端開發 (React + API)</div>
+                    <p class="project-desc">串接氣象局 Open Data API，以視覺化圖表呈現全台即時天氣資訊。練習 AJAX 與非同步處理。</p>
+                    <div class="project-links">
+                        <a href="#" class="project-link"><i class="fas fa-link"></i> Live Demo</a>
+                        <a href="#" class="project-link"><i class="fab fa-github"></i> Code</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 作品 3 -->
+            <div class="project-card">
+                <div class="project-img-container">
+                    <img src="https://placehold.co/600x400/222/ffff00?text=Design+Work" alt="專案縮圖" class="project-img">
+                </div>
+                <div class="project-info">
+                    <h3 class="project-title">個人攝影集網站</h3>
+                    <div class="project-role">角色：UI/UX 設計 + 切版</div>
+                    <p class="project-desc">運用 CSS Grid 與瀑布流排版設計的攝影作品集。專注於圖片載入優化 (Lazy Load) 與響應式排版。</p>
+                    <div class="project-links">
+                        <a href="#" class="project-link"><i class="fas fa-link"></i> Live Demo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p class="footer-text">&copy; 2025 DEV_NAME. All Rights Reserved.</p>
+        <p class="footer-text" style="font-size: 0.8rem; margin-top: 10px;">Designed with <i class="fas fa-heart" style="color: var(--secondary-color);"></i> & Code</p>
+    </footer>
+
+    <!-- JavaScript 邏輯 -->
+    <script>
+        // 1. 手機版選單切換
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // 點擊連結後自動收合選單
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // 2. Intersection Observer 用於觸發動畫
+        const observerOptions = {
+            threshold: 0.2 // 當元素出現 20% 時觸發
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // 技能條動畫
+                    if (entry.target.classList.contains('progress-bar-fill')) {
+                        const width = entry.target.getAttribute('data-width');
+                        entry.target.style.width = width;
+                    }
+                    // 時間軸動畫
+                    if (entry.target.classList.contains('timeline-item')) {
+                        entry.target.classList.add('show');
+                    }
+                    observer.unobserve(entry.target); // 動畫只執行一次
+                }
+            });
+        }, observerOptions);
+
+        // 觀察技能條
+        document.querySelectorAll('.progress-bar-fill').forEach(bar => {
+            observer.observe(bar);
+        });
+
+        // 觀察時間軸項目
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            observer.observe(item);
+        });
+
+        // 3. 處理打字機效果在不同裝置的適配 (Optional Enhancement)
+        // 簡單的邏輯確保初始載入時打字動畫正常
+        window.addEventListener('load', () => {
+            const typingEffect = document.querySelector('.typing-effect');
+            typingEffect.style.display = 'block';
+        });
+
+    </script>
+</body>
+</html>
